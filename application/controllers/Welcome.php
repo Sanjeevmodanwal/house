@@ -56,4 +56,12 @@ class Welcome extends CI_Controller {
 	public function admin(){
 		$this->load->view('admin/login.php');
 	}
+        
+        public function plan(){
+            $this->load->view('plan');
+        }
+        
+        public function contact(){
+            $this->load->view('contact');
+        }
 }

@@ -11,7 +11,7 @@ class Dashboard extends CI_Controller {
         if (isset($_SESSION['user'])) {
             
         } else {
-            redirect('/', 'refresh');
+            redirect('/admin', 'refresh');
         }
     }
 
@@ -33,18 +33,31 @@ class Dashboard extends CI_Controller {
     }
 
     public function add_category() {
-        $data = array(
-            'category_name' => $this->input->post('name'),
-            'discription' => $this->input->post('dis')
-        );
-        $this->db->insert('categories', $data);
-        if ($this->db->affected_rows() > 0) {
-            $lid = $insert_id = $this->db->insert_id();
-            $res = array('status' => 200, 'msg' => 'Add record successfully!');
+        $filename = rand(0, 99999) . $_FILES['image']['name'];
+        $this->load->helper(array('form', 'url'));
+        $config['upload_path'] = 'images/';
+        $config['allowed_types'] = 'jpg|png|pdf|doc|docx|xlsx|xls';
+        $config['max_size'] = 2000;
+        $config['file_name'] =$filename;     
+        $this->load->library('upload', $config);
+        if (!$this->upload->do_upload('image')) {
+            $this->session->set_flashdata('item', $this->upload->display_errors()); 
         } else {
-            $res = array('status' => 500, 'msg' => 'record not saved !');
+            $data = array(
+                'category_name' => $this->input->post('category_name'),
+                'discription' => $this->input->post('discription'),
+                'image'=>$filename
+            );
+            $this->db->insert('categories', $data);
+            if ($this->db->affected_rows() > 0) {
+                 $this->session->set_flashdata('item','Record is  saved');
+            } else {
+                 $this->session->set_flashdata('item','Record is not saved');
+            }
         }
-        echo json_encode($res);
+         redirect('/Admin/dashboard/category');
+
+        //echo json_encode($res);
     }
 
     public function addPlan() {
@@ -53,15 +66,15 @@ class Dashboard extends CI_Controller {
 
         $this->db->order_by('id', 'DESC');
         $plans = $this->db->get('plan_detail');
-        $record=[];
+        $record = [];
         foreach ($plans->result() as $row) {
             $record[] = array(
-                'cate_name'=>$this->Dashboard_model->get_cate($row->category_id),
+                'cate_name' => $this->Dashboard_model->get_cate($row->category_id),
                 'sqft' => $row->sqft,
                 'floor' => $row->floor,
                 'beds' => $row->beds,
                 'bath' => $row->bath,
-                'image'=>$this->Dashboard_model->get_single_img($row->id),
+                'image' => $this->Dashboard_model->get_single_img($row->id),
             );
         }
 //        $this->db->select('*');
@@ -70,7 +83,7 @@ class Dashboard extends CI_Controller {
 //        $this->db->join('images', 'images.plan_id = plan_detail.id');
         //$query2 = $this->db->get();
         $categories['category'] = $query->result_array();
-        $categories['plans'] =  $record;
+        $categories['plans'] = $record;
         $this->load->view('templates/header.php');
         $this->load->view('admin/dashboard/add.php', $categories);
         $this->load->view('templates/footer.php');
@@ -238,10 +251,10 @@ class Dashboard extends CI_Controller {
         echo json_encode($res);
     }
 
-    public function delete_class() {
+    public function delete_plan() {
         $id = $this->input->post('id');
         $this->db->where('id', $id);
-        $this->db->delete('class');
+        $this->db->delete('plan_detail');
         if ($this->db->affected_rows() > 0) {
             $res = array('status' => 200, 'msg' => 'Record Deleted');
         } else {
@@ -326,6 +339,97 @@ class Dashboard extends CI_Controller {
         }
         print_r($data);
         exit;
+    }
+    
+    public function blog(){
+        
+    }
+    
+    public function Service(){
+        $this->db->order_by('id', 'DESC');
+        $query = $this->db->get('services');
+        $servies['services'] = $query->result_array();
+        $this->load->view('templates/header.php');
+        $this->load->view('admin/dashboard/add_service.php',$servies);
+        $this->load->view('templates/footer.php');
+    }
+    
+       public function add_service() {
+        $filename = rand(0, 99999) . $_FILES['image']['name'];
+        $this->load->helper(array('form', 'url'));
+        $config['upload_path'] = 'images/';
+        $config['allowed_types'] = 'jpg|png|pdf|doc|docx|xlsx|xls';
+        $config['max_size'] = 2000;
+        $config['file_name'] =$filename;     
+        $this->load->library('upload', $config);
+        if (!$this->upload->do_upload('image')) {
+            $this->session->set_flashdata('item', $this->upload->display_errors()); 
+        } else {
+            $data = array(
+                'name' => $this->input->post('name'),
+                'title' => $this->input->post('title'),
+                'image'=>$filename
+            );
+            $this->db->insert('services', $data);
+            if ($this->db->affected_rows() > 0) {
+                 $this->session->set_flashdata('item','Record is  saved');
+            } else {
+                 $this->session->set_flashdata('item','Record is not saved');
+            }
+        }
+         redirect('/Admin/dashboard/Service');
+
+        //echo json_encode($res);
+    }
+    
+    public function ServiceDetail(){
+        $this->db->order_by('id', 'DESC');
+        $query = $this->db->get('services');
+
+
+        $this->db->select('*');
+        $this->db->from('services');
+        $this->db->join('service_detail', 'service_detail.service_id = services.id');
+        $service= $this->db->get();
+
+
+        $servies['Scategory'] = $query->result_array();
+        $servies['services'] = $service->result_array();
+        $this->load->view('templates/header.php');
+        $this->load->view('admin/dashboard/add_service_detail.php',$servies);
+        $this->load->view('templates/footer.php');
+    }
+
+
+    public function add_service_detail() {
+        $filename = rand(0, 99999) . $_FILES['image']['name'];
+        $this->load->helper(array('form', 'url'));
+        $config['upload_path'] = 'images/';
+        $config['allowed_types'] = 'jpg|png|pdf|doc|docx|xlsx|xls';
+        $config['max_size'] = 2000;
+        $config['file_name'] =$filename;     
+        $this->load->library('upload', $config);
+        if (!$this->upload->do_upload('image')) {
+            $this->session->set_flashdata('item', $this->upload->display_errors()); 
+        } else {
+            $data = array(
+                'service_id' => $this->input->post('service_id'),
+                'sqft' => $this->input->post('sqft'),
+                'plot_size'=>$this->input->post('ploat_size'),
+                'direaction'=>$this->input->post('direaction'),
+                'price'=>$this->input->post('price'),
+                'image'=> $filename
+            );
+            $this->db->insert('service_detail', $data);
+            if ($this->db->affected_rows() > 0) {
+                 $this->session->set_flashdata('item','Record is  saved');
+            } else {
+                 $this->session->set_flashdata('item','Record is not saved');
+            }
+        }
+         redirect('/Admin/dashboard/ServiceDetail');
+
+        //echo json_encode($res);
     }
 
 }

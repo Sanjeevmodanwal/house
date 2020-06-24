@@ -5,15 +5,15 @@
             <div class="card">
                 <div class="card-heading card-default">Add Plans</div>
                 <div class="card-block">
-                    <form role="form" method="post" action="<?php echo base_url('Admin/dashboard/add');?>" enctype="multipart/form-data">
+                    <form role="form" method="post" action="<?php echo base_url('Admin/dashboard/add_service_detail');?>" enctype="multipart/form-data">
                       <div class="row">
                       
                       <div class="col-md-3">
                       <div class="form-group">
                                     <label>Select Location</label>
-                                    <select name="category_id" class="form-control m-b location">
-                                        <?php foreach ($category as $cat) { ?>
-                                            <option value="<?php echo $cat['id']; ?>"><?php echo $cat['category_name']; ?></option>
+                                    <select name="service_id" class="form-control m-b location">
+                                        <?php foreach ($Scategory as $s) { ?>
+                                            <option value="<?php echo $s['id']; ?>"><?php echo $s['name']; ?></option>
                                         <?php } ?>
                                     </select>
                                 </div>
@@ -29,24 +29,31 @@
 
                          <div class="col-md-3">
                           <div class="form-group ">
-                            <label> Floors</label>
-                            <input type="number" placeholder="Floors" name="floor" class="form-control" id="name">
+                            <label> Plot Size</label>
+                            <input type="number" placeholder="Plot Size" name="ploat_size" class="form-control" id="name">
                              </div>
                          </div>
 
 
                          <div class="col-md-3">
                           <div class="form-group ">
-                            <label>Beds</label>
-                            <input type="number" placeholder="Beds" name="beds" class="form-control" id="name">
+                          <label>Select Direction</label>
+                                    <select name="direaction" class="form-control m-b location">
+                                      
+                                            <option value="West Facing">West Facing</option>
+                                            <option value="South Facing">South Facing</option>
+                                            <option value="North Facing">North Facing</option>
+                                            <option value="East Facing">East Facing</option>
+                                       
+                                    </select>
                              </div>
                          </div>
 
 
                          <div class="col-md-3">
                           <div class="form-group ">
-                            <label>Baths</label>
-                            <input type="number" placeholder="bath" name="bath" class="form-control" id="name">
+                            <label>Price From</label>
+                            <input type="number" placeholder="Enter Price" name="price" class="form-control" id="name">
                              </div>
                          </div>
                        
@@ -54,7 +61,7 @@
                          <div class="col-md-3">
                           <div class="form-group ">
                             <label>Upload images</label>
-                            <input type="file" name='files[]' multiple class="form-control" id="name">
+                            <input type="file" name='image'  class="form-control" id="name">
                              </div>
                          </div>
                         
@@ -77,32 +84,33 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>category name</th>
+                                <th>Service name</th>
                                 <th>images</th>
                                 <th>Sqft</th>
-                                <th>Floor</th>
-                                 <th>Beds</th>
-                                 <th>Baths</th>
+                                <th>Plot Size</th>
+                                 <th>Direction</th>
+                                 <th>Price</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
 
                          <tbody id="ListLocation">
-                            <?php
+                         <?php
                             $count = 1;
-                            foreach ($plans as $p) {
+                            foreach ($services as $s) {
                                 ?>
                                 <tr>
                                     <td><?php echo $count++; ?></td>
-                                    <td class="lname<?php echo $cat['id']; ?>"><?php echo $p['cate_name']; ?></td>
-                                    <td class="ladd<?php echo $cat['id']; ?>"><img src="<?php echo base_url('images')."/". $p['image']; ?>" width="150" height="150"></td>
-                                     <td class="ladd<?php echo $cat['id']; ?>"><?php echo $p['sqft']; ?></td>
-                                      <td class="ladd<?php echo $cat['id']; ?>"><?php echo $p['floor']; ?></td>
-                                      <td class="ladd<?php echo $cat['id']; ?>"><?php echo $p['beds']; ?></td>
-                                       <td class="ladd<?php echo $cat['id']; ?>"><?php echo $p['bath']; ?></td>
-                                    <td><button class="btn btn-danger" data-id="<?php echo $cat['id']; ?>">DELETE</button></td>
+                                    <td><?php echo $s['name']; ?></td>
+                                    <td><img src="<?php echo base_url('images')."/". $s['image']; ?>" width="150" height="150"></td>
+                                     <td><?php echo $s['sqft']; ?></td>
+                                      <td><?php echo $s['plot_size']; ?></td>
+                                      <td><?php echo $s['direaction']; ?></td>
+                                       <td><?php echo $s['price']; ?></td>
+                                    <td><button class="btn btn-danger" data-id="<?php echo $s['id']; ?>">DELETE</button></td>
                                 </tr>
 <?php } ?>
+
 
                         </tbody> 
                     </table>
@@ -197,4 +205,11 @@
         }
     });
 
-</script>
+</script><?php
+
+/* 
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+

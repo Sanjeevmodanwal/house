@@ -3,18 +3,18 @@
         <div class="col-md-4">
             <div class="text-left margin-b-2"><strong><?php echo $this->session->flashdata('item'); ?> </strong></div>
             <div class="card">
-                <div class="card-heading card-default">Add Category</div>
+                <div class="card-heading card-default">Add Service Category</div>
                 <div class="card-block">
-                    <form role="form" method="post" action="<?php echo base_url('Admin/dashboard/add_category');?>" enctype="multipart/form-data">
+                    <form role="form" method="post" action="<?php echo base_url('Admin/dashboard/add_service'); ?>" enctype="multipart/form-data">
                         <div class="form-group ">
                             <label>Name</label>
-                            <input type="text" placeholder="Name" name="category_name" class="form-control" id="name">
+                            <input type="text" placeholder="Name" name="name" class="form-control" id="name">
                         </div>
                         <div class="form-group ">
-                            <label>Discription</label>
-                            <input type="text" placeholder="Discription" name="discription" class="form-control" id="category">
+                            <label>title</label>
+                            <input type="text" placeholder="Discription" name="title" class="form-control" id="category">
                         </div>
-                        
+
                         <div class="form-group ">
                             <label>Upload image</label>
                             <input type="file" name="image" class="form-control">
@@ -31,7 +31,7 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-heading card-default">
-                 Category
+                    Category
                 </div>
                 <div class="card-block">
                     <table id="datatable" class="table table-striped dt-responsive nowrap">
@@ -45,19 +45,20 @@
                             </tr>
                         </thead>
 
-                         <tbody id="ListLocation">
+                        <tbody id="ListLocation">
+
                             <?php
                             $count = 1;
-                            foreach ($category as $cat) {
+                            foreach ($services as $s) {
                                 ?>
                                 <tr>
                                     <td><?php echo $count++; ?></td>
-                                    <td class="lname<?php echo $cat['id']; ?>"><?php echo $cat['category_name']; ?></td>
-                                    <td class="ladd<?php echo $cat['id']; ?>"><?php echo $cat['discription']; ?></td>
-                                    <td class="ladd<?php echo $cat['id']; ?>"><img src="<?php echo base_url('images')."/".$cat['image']; ?>" height="150" width="150"></td>
-                                    <td><button class="btn btn-primary edit-btn" data-id="<?php echo $cat['id']; ?>">Edit</button></td>
+                                    <td class="lname<?php echo $s['id']; ?>"><?php echo $s['name']; ?></td>
+                                    <td class="ladd<?php echo $s['id']; ?>"><?php echo $s['title']; ?></td>
+                                    <td class="ladd<?php echo $s['id']; ?>"><img src="<?php echo base_url('images') . "/" . $s['image']; ?>" height="150" width="150"></td>
+                                    <td><button class="btn btn-primary edit-btn" data-id="<?php echo $s['id']; ?>">Edit</button></td>
                                 </tr>
-<?php } ?>
+                            <?php } ?>
 
                         </tbody> 
                     </table>
@@ -149,10 +150,10 @@
         var r = confirm("Are you want to delete this ?");
         if (r == true) {
             $.post("<?php echo base_url('Admin/dashboard/delete_location'); ?>", {"id": id}, function (d) {
-                if(d.status==200){
+                if (d.status == 200) {
                     th.hide('1000');
                 }
-            },'json');
+            }, 'json');
         } else {
             txt = "Cancel!";
         }
