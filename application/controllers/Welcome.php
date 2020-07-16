@@ -8,6 +8,7 @@ class Welcome extends CI_Controller {
 	{
 			parent::__construct();
 			$this->load->helper(array('form', 'url'));
+			$this->load->model('Welcome_model');
 	}
 
 	/**
@@ -25,9 +26,12 @@ class Welcome extends CI_Controller {
 	 * map to /index.php/welcome/<method_name>
 	 * @see https://codeigniter.com/user_guide/general/urls.html
 	 */
-	public function index()
-	{
-		$this->load->view('welcome_message');
+	public function index(){
+		$results['get_trending_housing'] = $this->Welcome_model->get_trending_housing();
+		// print_r($results['get_trending_housing']);
+		$this->load->view('templates/home_header.php');
+        $this->load->view('welcome_message', $results);
+        $this->load->view('templates/home_footer.php');
 	}
 
 	public function upload(){
@@ -57,11 +61,20 @@ class Welcome extends CI_Controller {
 		$this->load->view('admin/login.php');
 	}
         
-        public function plan(){
-            $this->load->view('plan');
-        }
+	public function plan(){
+		$this->load->view('plan');
+	}
         
-        public function contact(){
-            $this->load->view('contact');
-        }
+	public function contact(){
+		$this->load->view('contact');
+	}
+	
+	public function product(){
+		$results['get_products_list'] = $this->Welcome_model->get_products_list();
+		$this->load->view('templates/home_header.php');
+        $this->load->view('product', $results);
+        $this->load->view('templates/home_footer.php');
+	}
+	
+	
 }
